@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 
+import Store from "../Store";
 import Colors from "../Colors";
 import Button from "../components/Button";
 
@@ -43,6 +44,31 @@ const AltaPaciente = () => {
     ) {
       return Alert.alert("Favor de llenar todos los campos");
     }
+
+    if (!curpValida(curp)) {
+      return Alert.alert("La CURP no es válida");
+    }
+
+    Store.addPaciente({
+      nombres: nombre,
+      apellidoPaterno: apellidoPaterno,
+      apellidoMaterno: apellidoMaterno,
+      curp: curp,
+      edad: +edad,
+      fechaDeNacimiento: fechaDeNacimiento.toString(),
+      tipoDeSangre: tipoDeSangre,
+      estaActivo: false,
+    });
+    return Alert.alert(
+      "Paciente agregado",
+      "El paciente se ha agregado correctamente",
+      [
+        {
+          text: "OK",
+          onPress: () => navigation.goBack(),
+        },
+      ]
+    );
   };
 
   return (
@@ -168,6 +194,18 @@ const AltaPaciente = () => {
 
 export default AltaPaciente;
 
+//Función para validar una CURP
+function curpValida(curp) {
+  var re =
+      /^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/,
+    validado = curp.match(re);
+
+  if (!validado)
+    //Coincide con el formato general?
+    return false;
+
+  return true; //Validado
+}
 
 const styles = StyleSheet.create({
   container: {

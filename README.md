@@ -14,6 +14,7 @@
 # Para levantar el proyecto se deben ejecutar los siguientes comandos:
 
 ```bash
+  npm start
   npm run ios
   npm run android
 ```
