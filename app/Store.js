@@ -83,10 +83,62 @@ class Store {
     this.guardarStore();
   }
 
+  getListaDeEspera() {
+    return this.emergencias.filter(
+      (emergencia) => emergencia.status === "Espera"
+    );
+  }
+
+  getListaDeEsperaByNivel(nivel) {
+    return this.emergencias.filter(
+      (emergencia) =>
+        emergencia.status === "Espera" && emergencia.nivel === nivel
+    );
+  }
+
   getEmergenciasActivas() {
     return this.emergencias.filter(
       (emergencia) => emergencia.status !== "Espera"
     );
+  }
+
+  getPacientesEnEmergencias() {
+    return this.emergencias.filter(
+      (emergencia) =>
+        emergencia.status !== "Espera" && emergencia.status !== "Alta"
+    );
+  }
+
+  getEmergenciasByStatus(status) {
+    return this.emergencias.filter(
+      (emergencia) => emergencia.status === status
+    );
+  }
+
+  getEmergenciaByCurp(curp) {
+    const emergencias = this.getEmergenciasActivas();
+    return emergencias.find((emergencia) => emergencia.paciente.curp === curp);
+  }
+
+  getEmergenciasActivasByNombre(name) {
+    const emergencias = this.getEmergenciasActivas();
+    return emergencias.filter((emergencia) =>
+      emergencia.paciente.nombres.includes(name)
+    );
+  }
+
+  ingresarEmergencia(curp) {
+    const emergencias = this.emergencias.filter(
+      (emergencia) => emergencia.status === "Espera"
+    );
+    if (!emergencias) return;
+
+    const emergencia = emergencias.find(
+      (emergencia) => emergencia.paciente.curp === curp
+    );
+    if (!emergencia) return;
+    emergencia.status = "Validacion";
+    this.guardarStore();
   }
 
 }
