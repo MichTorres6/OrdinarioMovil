@@ -8,34 +8,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import Colors from "../Colors";
-import Store from "../Store";
-import { useNavigation } from "@react-navigation/native";
+import { useBuscarPaciente } from "../hooks/useBuscarPaciente";
 
 const BuscarPaciente = () => {
-  const navigation = useNavigation();
-  const [cargando, setCargando] = useState(false);
-  const [texto, setTexto] = useState("");
-  const [pacientes, setPacientes] = useState([]);
-  const [buscado, setBuscado] = useState(false);
-
-  const buscar = async () => {
-    try {
-      setCargando(true);
-
-      const pacientes = Store.getPacienteByName(texto);
-      setPacientes(pacientes ?? []);
-    } catch (error) {
-    } finally {
-      setCargando(false);
-      setBuscado(true);
-    }
-  };
-
-  const addEmergencia = (paciente) => {
-    navigation.navigate("AltaEmergencia", { paciente });
-  };
+  const {
+    addEmergencia,
+    buscado,
+    buscar,
+    cargando,
+    pacientes,
+    setTexto,
+    texto,
+  } = useBuscarPaciente();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primary }}>

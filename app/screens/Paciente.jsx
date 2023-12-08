@@ -1,5 +1,4 @@
 import {
-  Alert,
   KeyboardAvoidingView,
   Modal,
   SafeAreaView,
@@ -10,41 +9,23 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 
 import Colors from "../Colors";
-import Store from "../Store";
 import { convertirFecha, getColorByEstado } from "../helpers";
 import Button from "../components/Button";
+import { usePaciente } from "../hooks/usePaciente";
 
 const Paciente = ({ route }) => {
-  const [actualizacion, setActualizacion] = useState("");
-  const [emergencia, setEmergencia] = useState(route.params.emergencia);
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const addObservacion = () => {
-    if (actualizacion === "")
-      return Alert.alert("La actualización no puede estar vacía");
-
-    if (actualizacion.length < 50)
-      return Alert.alert("La actualización debe tener al menos 50 caracteres");
-
-    Store.addObservacion(emergencia.paciente.curp, {
-      fecha: new Date().toISOString(),
-      texto: actualizacion,
-    });
-
-    setActualizacion("");
-    Alert.alert("Actualización agregada");
-
-    setEmergencia(Store.getEmergenciaByCurp(emergencia.paciente.curp));
-  };
-
-  const onUpdateStatus = (status) => {
-    Store.updateEmergenciaStatus(emergencia.paciente.curp, status);
-    setEmergencia(Store.getEmergenciaByCurp(emergencia.paciente.curp));
-    setModalVisible(false);
-  };
+  const {
+    actualizacion,
+    addObservacion,
+    emergencia,
+    modalVisible,
+    onUpdateStatus,
+    setActualizacion,
+    setModalVisible,
+  } = usePaciente(route.params.emergencia);
 
   return (
     <>

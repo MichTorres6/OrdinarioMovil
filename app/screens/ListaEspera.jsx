@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Alert,
   Modal,
   SafeAreaView,
   ScrollView,
@@ -9,59 +8,21 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Colors from "../Colors";
-import Store from "../Store";
 import { getColorByNivel, getTitleByNivel } from "../helpers";
+import { useListaEspera } from "../hooks/useListaEspera";
 
 const ListaEspera = () => {
-  const [cargando, setCargando] = useState(true);
-  const [nivel, setNivel] = useState("0");
-  const [modalVisible, setModalVisible] = useState(false);
-  const [emergencias, setEmergencias] = useState([]);
-
-  const loadListaDeEspera = () => {
-    try {
-      setCargando(true);
-      setEmergencias(Store.getListaDeEspera());
-    } catch (error) {
-    } finally {
-      setCargando(false);
-    }
-  };
-  useEffect(() => {
-    loadListaDeEspera();
-  }, []);
-
-  const filter = (val) => {
-    setNivel(val);
-    if (val === "0") {
-      setEmergencias(Store.getListaDeEspera());
-      setModalVisible(false);
-
-      return;
-    }
-    setEmergencias(Store.getListaDeEsperaByNivel(val));
-    setModalVisible(false);
-  };
-
-  const onPress = (SelectedEmergencia) => {
-    let higher = 6;
-    emergencias.map((emergencia) => {
-      if (+emergencia.nivel < higher) {
-        higher = +emergencia.nivel;
-      }
-    });
-
-    if (+SelectedEmergencia.nivel > higher) {
-      return Alert.alert("Aun existe un paciente con mayor prioridad");
-    }
-    Store.ingresarEmergencia(SelectedEmergencia.paciente.curp);
-
-    Alert.alert("Paciente ingresado");
-
-    loadListaDeEspera();
-  };
+  const {
+    cargando,
+    emergencias,
+    filter,
+    modalVisible,
+    nivel,
+    onPress,
+    setModalVisible,
+  } = useListaEspera();
 
   return (
     <>

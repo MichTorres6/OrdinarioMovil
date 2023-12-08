@@ -8,46 +8,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Colors from "../Colors";
-import Store from "../Store";
 import { getColorByEstado } from "../helpers";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
+import { useListaPacientes } from "../hooks/useListaPacientes";
 
 const ListaPacientes = () => {
-  const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const [cargando, setCargando] = useState(true);
-  const [texto, setTexto] = useState("");
-  const [emergencias, setEmergencias] = useState([]);
-
-  useEffect(() => {
-    if (!isFocused) return;
-    try {
-      if (texto === "") {
-        setEmergencias(Store.getEmergenciasActivas());
-        return;
-      }
-      setEmergencias(Store.getEmergenciasActivasByNombre(texto));
-    } catch (error) {
-    } finally {
-      setCargando(false);
-    }
-  }, [isFocused]);
-
-  const buscar = () => {
-    setCargando(true);
-    try {
-      setEmergencias(Store.getEmergenciasActivasByNombre(texto));
-    } catch (error) {
-    } finally {
-      setCargando(false);
-    }
-  };
-
-  const onPress = (SelectedEmergencia) => {
-    navigation.navigate("Paciente", { emergencia: SelectedEmergencia });
-  };
+  const { buscar, cargando, emergencias, onPress, setTexto, texto } =
+    useListaPacientes(isFocused);
 
   return (
     <>

@@ -1,5 +1,4 @@
 import {
-  Alert,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -8,51 +7,21 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import Colors from "../Colors";
-import Store from "../Store";
 import Button from "../components/Button";
-import { useNavigation } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
+import { useAltaEmergencia } from "../hooks/useAltaEmergencia";
 
 const AltaEmergencia = ({ route }) => {
-  const navigation = useNavigation();
   const { paciente } = route.params;
-  const [triaje, setTriaje] = useState("");
-  const [observaciones, setObservaciones] = useState("");
-
-  const guardarEmergencia = () => {
-    if (triaje === "" || observaciones === "") {
-      return Alert.alert("Favor de llenar todos los campos");
-    }
-    if (observaciones.length < 50) {
-      return Alert.alert(
-        "El campo observaciones debe tener al menos 50 caracteres"
-      );
-    }
-
-    Store.addEmergencia({
-      paciente: paciente,
-      nivel: triaje,
-      Observaciones: [
-        { fecha: new Date().toISOString(), texto: observaciones },
-      ],
-      status: triaje === "1" ? "Validacion" : "Espera",
-    });
-
-    Store.setPacienteActivo(paciente.curp, true);
-
-    return Alert.alert(
-      "Paciente agregado",
-      "El paciente se ha agregado correctamente",
-      [
-        {
-          text: "OK",
-          onPress: () => navigation.pop(2),
-        },
-      ]
-    );
-  };
+  const {
+    guardarEmergencia,
+    observaciones,
+    setObservaciones,
+    setTriaje,
+    triaje,
+  } = useAltaEmergencia(paciente);
 
   return (
     <SafeAreaView style={styles.container}>
