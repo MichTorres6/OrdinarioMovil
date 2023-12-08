@@ -63,7 +63,31 @@ class Store {
     return this.pacientes.find((paciente) => paciente.curp === curp);
   }
 
+  setPacienteActivo(curp, val) {
+    const paciente = this.getPacienteByCurp(curp);
+    if (!paciente) return;
+    paciente.estaActivo = val;
+    this.guardarStore();
+  }
 
+  didPacienteExist(curp) {
+    return this.pacientes.some((paciente) => paciente.curp === curp);
+  }
+
+  //Emergencias
+  addEmergencia(newEmergencia) {
+    this.emergencias = this.emergencias.filter(
+      (emergencia) => emergencia.paciente.curp !== newEmergencia.paciente.curp
+    );
+    this.emergencias.push(newEmergencia);
+    this.guardarStore();
+  }
+
+  getEmergenciasActivas() {
+    return this.emergencias.filter(
+      (emergencia) => emergencia.status !== "Espera"
+    );
+  }
 
 }
 

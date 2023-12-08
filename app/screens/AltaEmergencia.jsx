@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import Colors from "../Colors";
+import Store from "../Store";
 import Button from "../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
@@ -29,6 +30,28 @@ const AltaEmergencia = ({ route }) => {
         "El campo observaciones debe tener al menos 50 caracteres"
       );
     }
+
+    Store.addEmergencia({
+      paciente: paciente,
+      nivel: triaje,
+      Observaciones: [
+        { fecha: new Date().toISOString(), texto: observaciones },
+      ],
+      status: triaje === "1" ? "Validacion" : "Espera",
+    });
+
+    Store.setPacienteActivo(paciente.curp, true);
+
+    return Alert.alert(
+      "Paciente agregado",
+      "El paciente se ha agregado correctamente",
+      [
+        {
+          text: "OK",
+          onPress: () => navigation.pop(2),
+        },
+      ]
+    );
   };
 
   return (
