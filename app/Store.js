@@ -127,6 +127,13 @@ class Store {
     );
   }
 
+  addObservacion(curp, observacion) {
+    const emergencia = this.getEmergenciaByCurp(curp);
+    if (!emergencia) return;
+    emergencia.Observaciones.push(observacion);
+    this.guardarStore();
+  }
+
   ingresarEmergencia(curp) {
     const emergencias = this.emergencias.filter(
       (emergencia) => emergencia.status === "Espera"
@@ -141,6 +148,20 @@ class Store {
     this.guardarStore();
   }
 
+  updateEmergenciaStatus(curp, status) {
+    const emergencia = this.getEmergenciaByCurp(curp);
+    console.log(curp, status, emergencia);
+    if (!emergencia) return;
+    emergencia.status = status;
+
+    if (status === "Alta") {
+      const paciente = this.getPacienteByCurp(curp);
+      if (!paciente) return;
+      paciente.estaActivo = false;
+    }
+
+    this.guardarStore();
+  }
 }
 
 export default new Store();
